@@ -1,0 +1,51 @@
+#!/usr/bin/python2
+# -*- coding: UTF-8 -*-
+# Author: Andreas Bock
+
+import sys
+import getopt
+import numpy as np
+from scipy import misc
+import scipy.cluster.vq as vq
+
+def usage ():
+	print 'Usage: kmeans_it [input_image] [output_image] [colours]'
+	exit()
+
+def perform_kmeans (input_image, output_image, colours):
+	img = misc.imread(input_image)
+	ysize, xsize, _ = img.shape
+	clustering_pixels = np.reshape(img, (xsize*ysize, 3))
+	
+	centroids, labels = vq.kmeans2(clustering_pixels, colours)
+	labels = np.reshape(labels, (ysize, xsize))
+
+	for i in range(ysize):
+		for j in range(xsize):
+			img[i,j] = tuple(centroids[labels[i,j]])
+	misc.imsave(output_image, img)
+
+def main ():
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], 'h:', ['help'])
+		if opts == [] and args == []:
+			usage()
+
+	except getopt.GetoptError as err:
+		print(err)
+		usage()
+	for opt in opts:
+		if opt[0] in '-h' or opt[0] in '--help':
+			usage()
+	if len(args) < 3:
+		usage()
+	input_image  = args[0]
+	output_image = args[1]
+	colours 	 = int(args[2])
+	try:
+		perform_kmeans(input_image, output_image, colours)
+	except:
+		usage()
+		
+if __name__ == '__main__':
+    main()
