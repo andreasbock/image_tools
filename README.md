@@ -1,7 +1,7 @@
 kmeans-it
 =========
 
-A simple tool for applying kmeans to your images :)
+A simple tool for applying different algorithms to your images :)
 
 You will need the following packages:
 
